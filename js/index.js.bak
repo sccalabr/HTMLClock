@@ -7,17 +7,17 @@ function getTemp() {
       type: "GET",
       dataType: "json",
       success: function(json) {
-         console.log("I WAS SUCCESSFUL!")
-         console.log(json["daily"]["summary"])
-         console.log(json["daily"]["icon"])
-         console.log("img/" + json["daily"]["icon"] + ".png")
-         console.log(json["daily"]["temperatureMax"])
-         console.log(json["daily"]["data"][0]["temperatureMax"])
+        // console.log("I WAS SUCCESSFUL!")
+       //  console.log(json["daily"]["summary"])
+       //  console.log(json["daily"]["icon"])
+       //  console.log("img/" + json["daily"]["icon"] + ".png")
+       //  console.log(json["daily"]["temperatureMax"])
+        // console.log(json["daily"]["data"][0]["temperatureMax"])
          
          $("#forecastLabel").html(json["daily"]["summary"])
-         console.log($("#forecastIcon").attr("src"))
+       //  console.log($("#forecastIcon").attr("src"))
          $("#forecastIcon").attr("src", "img/" + json["daily"]["icon"] + ".png")
-         console.log($("#forecastIcon").attr("src"))
+       //  console.log($("#forecastIcon").attr("src"))
          
          var temp = json["daily"]["data"][0]["temperatureMax"]
          
@@ -45,13 +45,13 @@ function getTemp() {
 }
 
 function showAlarmPopUp() {
-   console.log("showAlarmPopUp")
+  // console.log("showAlarmPopUp")
    $("#mask").removeClass("hide")
    $("#popup").removeClass("hide")
 }
 
 function hideAlarmPopUp() {
-   console.log("hideAlarmPopUp")
+   //console.log("hideAlarmPopUp")
    $("#mask").addClass("hide")
    $("#popup").addClass("hide")
 }
@@ -60,10 +60,23 @@ function addAlarm() {
    var hours = $("#hours option:selected").text()
    var mins = $("#mins option:selected").text()
    var ampm = $("#ampm option:selected").text()
-   var alarmName = $("#alarmName option:selected").text()
-   console.log("ADD ALARM: " + hours + " " + mins + " " + ampm + " =>" + alarmName)
-   insertAlarm(hours, mins, ampm, "alarmName") 
+   console.log($("#alarmName"))
+   var alarmName = $("#alarmName").val() + " "
+   //console.log("ADD ALARM: " + hours + " " + mins + " " + ampm + " =>" + alarmName)
+/*   
+   insertAlarm(hours, mins, ampm, alarmName) 
    hideAlarmPopUp()
+*/   
+   var AlarmObject = Parse.Object.extend("Alarm");
+   var alarmObject = new AlarmObject();
+     alarmObject.save({"time": time,"alarmName": alarmName}, {
+     success: function(object) {
+       console.log("getAllAlarms Success")
+       console.log(object)
+       insertAlarm(object["hours"], object["mins"], object["ampm"], object["alarmName"])
+       hideAlarmPopup() 
+     }
+   });
 
 }
 
@@ -90,7 +103,7 @@ function insertAlarm(hours, mins, ampm, alarmName) {
    var div3 = document.createElement("div");
    $(div3).addClass("time")
    $(div3).html(" " +  hours + ":" + mins + ampm);
-   
+
    $(div).append(div2)
    $(div).append(div3)
    $("#alarms").append($(div))
@@ -100,3 +113,23 @@ function insertAlarm(hours, mins, ampm, alarmName) {
    console.log("div2 " +$(div2).html())
    console.log("div3 " +$(div3).html())
 }
+
+function getAllAlarms() {
+   //console.log("getAllAlarms")
+   Parse.initialize("apWKb4OIUYzyMki7S8KLGLM9w1lhhGUhBZsXC322", "ahKIZyhAtZ30ZHI4uuFNPlXRAmL9Rm2bIDkXR1j4")
+
+   var AlarmObject = Parse.Object.extend("Alarm");
+       var query = new Parse.Query(AlarmObject);
+       query.find({
+           success: function(results) {
+               for (var i = 0; i < results.length; i++) { 
+                   insertAlarm(results[i].time, results[i].alarmName);
+               }
+           }
+         });
+    //this may not go here, ask jay.
+
+   //$(document).load(getAllAlarms);
+}
+
+$(this).load(getAllAlarms);
