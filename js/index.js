@@ -1,4 +1,5 @@
 window.onload = getTemp();
+var LOGGER = 1
 function getTemp() {
 
    $.ajax({
@@ -7,13 +8,13 @@ function getTemp() {
       type: "GET",
       dataType: "json",
       success: function(json) {
-        // console.log("I WAS SUCCESSFUL!")
-       //  console.log(json["daily"]["summary"])
-       //  console.log(json["daily"]["icon"])
-       //  console.log("img/" + json["daily"]["icon"] + ".png")
-       //  console.log(json["daily"]["temperatureMax"])
-        // console.log(json["daily"]["data"][0]["temperatureMax"])
-         
+      if (LOGGER && 0) {
+         console.log(json["daily"]["summary"])
+         console.log(json["daily"]["icon"])
+         console.log("img/" + json["daily"]["icon"] + ".png")
+         console.log(json["daily"]["temperatureMax"])
+         console.log(json["daily"]["data"][0]["temperatureMax"])
+      }
          $("#forecastLabel").html(json["daily"]["summary"])
        //  console.log($("#forecastIcon").attr("src"))
          $("#forecastIcon").attr("src", "img/" + json["daily"]["icon"] + ".png")
@@ -45,13 +46,16 @@ function getTemp() {
 }
 
 function showAlarmPopUp() {
-  // console.log("showAlarmPopUp")
+   if(LOGGER) {
+      console.log("showAlarmPopUp")
+   }
+   
    $("#mask").removeClass("hide")
    $("#popup").removeClass("hide")
 }
 
 function hideAlarmPopUp() {
-   //console.log("hideAlarmPopUp")
+   console.log("hideAlarmPopUp")
    $("#mask").addClass("hide")
    $("#popup").addClass("hide")
 }
@@ -60,76 +64,114 @@ function addAlarm() {
    var hours = $("#hours option:selected").text()
    var mins = $("#mins option:selected").text()
    var ampm = $("#ampm option:selected").text()
-   console.log($("#alarmName"))
    var alarmName = $("#alarmName").val() + " "
-   //console.log("ADD ALARM: " + hours + " " + mins + " " + ampm + " =>" + alarmName)
-/*   
-   insertAlarm(hours, mins, ampm, alarmName) 
-   hideAlarmPopUp()
-*/   
+   var time = hours + ":" + mins + ampm  
+   
+   if(LOGGER) {
+      console.log($("#alarmName"))
+      console.log("ADD ALARM: " + hours + " " + mins + " " + ampm + " =>" + alarmName)
+   }
+   
    var AlarmObject = Parse.Object.extend("Alarm");
    var alarmObject = new AlarmObject();
      alarmObject.save({"time": time,"alarmName": alarmName}, {
      success: function(object) {
-       console.log("getAllAlarms Success")
-       console.log(object)
-       insertAlarm(object["hours"], object["mins"], object["ampm"], object["alarmName"])
-       hideAlarmPopup() 
+         if(LOGGER) {
+            console.log("getAllAlarms Success")
+         }
+        
+       insertAlarm(object["attributes"]["time"].substring(0,2), object["attributes"]["time"].substring(3,5), object["attributes"]["time"].substring(5), object["attributes"]["alarmName"], alarmObject)
+       hideAlarmPopUp() 
      }
    });
-
 }
 
-function insertAlarm(hours, mins, ampm, alarmName) {
-   console.log("insertAlarmPopUp")
-   console.log(hours + " " + mins + " " + ampm + " " + alarmName)
+function deleteAlarmPopUp(button) {
+   if(LOGGER) {
+      console.log("deleteAlarmPopUp")
+   }
    
-   //console.log("#mask" + $("#mask").html())
-  
-   $("#mask").addClass("hide")
-   console.log($("#mask").hasClass("hide"))
+   var AlarmObject = Parse.Object.extend("Alarm");
+   var query = new Parse.Query(AlarmObject);
    
-   $("#popup").addClass("hide")
-   console.log($("#popup").hasClass("hide"))
+   if(LOGGER) {
+      console.log(this.document.activeElement.id)
+   }
    
-   var div = document.createElement("div");
-   $(div).addClass("flexable")
-   console.log($(div).hasClass("flexable"))
-   
-   var div2 = document.createElement("div");
-   $(div2).addClass("name")
-   $(div2).html(alarmName)
-   
-   var div3 = document.createElement("div");
-   $(div3).addClass("time")
-   $(div3).html(" " +  hours + ":" + mins + ampm);
+   query.get(this.document.activeElement.id, {
+     success: function(results) {
+       // The object was retrieved successfully.
+       results.destroy({});
+       
 
-   $(div).append(div2)
-   $(div).append(div3)
-   $("#alarms").append($(div))
+     },
+     error: function(object, error) {
+       console.log("Something broke");
+     }
+   });
+   $("#" + this.document.activeElement.id).parent().parent().remove(); 
+}
+
+function insertAlarm(hours, mins, ampm, alarmName, results) {
    
-   console.log("alarms " + $("#alarms").html())
-   console.log("div " + $(div).html())
-   console.log("div2 " +$(div2).html())
-   console.log("div3 " +$(div3).html())
+   if(LOGGER) {
+      console.log("insertAlarmPopUp")
+      console.log(hours + " " + mins + " " + ampm + " " + alarmName)
+   }
+   
+   if(hours !== undefined && mins !== undefined && ampm !== undefined && alarmName !== undefined) {
+   
+      //console.log("#mask" + $("#mask").html())
+     
+      $("#mask").addClass("hide")
+      $("#popup").addClass("hide")
+
+      if(LOGGER) {
+         console.log($("#mask").hasClass("hide"))
+         console.log($("#popup").hasClass("hide"))
+      }
+      
+      var div = document.createElement("div");
+      $(div).addClass("flexable")
+      
+      var div2 = document.createElement("div");
+      $(div2).addClass("name")
+      $(div2).html(alarmName)
+      
+      var div3 = document.createElement("div");
+      $(div3).addClass("time")
+      $(div3).html(" " +  hours + " : " + mins+" " + ampm + " " + "<input id ='"+ results['id'] + "' type='button' value='Delete Alarm' class='button'  onclick='deleteAlarmPopUp()'/>");
+
+      $(div).append(div2)
+      $(div).append(div3)
+      $("#alarms").append($(div))
+      
+      if(LOGGER) {    
+         console.log("alarms " + $("#alarms").html())
+         console.log("div " + $(div).html())
+         console.log("div2 " +$(div2).html())
+         console.log("div3 " +$(div3).html())
+      }
+   }
 }
 
 function getAllAlarms() {
-   console.log("getAllAlarms")
+   if(LOGGER) { 
+      console.log("getAllAlarms")
+   }
+   
    Parse.initialize("apWKb4OIUYzyMki7S8KLGLM9w1lhhGUhBZsXC322", "ahKIZyhAtZ30ZHI4uuFNPlXRAmL9Rm2bIDkXR1j4")
 
    var AlarmObject = Parse.Object.extend("Alarm");
        var query = new Parse.Query(AlarmObject);
        query.find({
            success: function(results) {
+               console.log(results + " " + results.length)
                for (var i = 0; i < results.length; i++) { 
-                   insertAlarm(results[i].time, results[i].alarmName);
+                   insertAlarm(results[i]["attributes"]["time"].substring(0,2), results[i]["attributes"]["time"].substring(3,5), results[i]["attributes"]["time"].substring(5), results[i]["attributes"]["alarmName"], results[i])
                }
            }
          });
-    //this may not go here, ask jay.
-
-   //$(document).load(getAllAlarms);
 }
 
 $(this).load(getAllAlarms);
