@@ -76,7 +76,7 @@ function addAlarm() {
    
    var AlarmObject = Parse.Object.extend("Alarm");
    var alarmObject = new AlarmObject();
-     alarmObject.save({"time": time,"alarmName": alarmName}, {
+     alarmObject.save({"time": time,"alarmName": alarmName, "user": user}, {
      success: function(object) {
          if(LOGGER) {
             console.log("getAllAlarms Success")
@@ -182,6 +182,9 @@ function signinCallback(authResult) {
     // Update the app to reflect a signed in user
     // Hide the sign-in button now that the user is authorized, for example:
     document.getElementById('signinButton').setAttribute('style', 'display: none');
+    user = gapi.client.plus.people.get({'userId' : 'me'}).displayName;
+
+    $(".clocks").after("<h2> Signed in as: " + user + "</h2>")
     $(this).load(getAllAlarms(authResult));
   } else {
     // Update the app to reflect a signed out user

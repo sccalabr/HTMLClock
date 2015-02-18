@@ -1,5 +1,7 @@
 window.onload = getTemp();
 var LOGGER = 1
+var user = ""
+
 function getTemp() {
 
    $.ajax({
@@ -180,6 +182,9 @@ function signinCallback(authResult) {
     // Update the app to reflect a signed in user
     // Hide the sign-in button now that the user is authorized, for example:
     document.getElementById('signinButton').setAttribute('style', 'display: none');
+    var user = gapi.client.plus.people.get({'userId' : 'me'}).displayName;
+
+    $(".clocks").after("<h2>" + user + "</h2>")
     $(this).load(getAllAlarms(authResult));
   } else {
     // Update the app to reflect a signed out user
@@ -188,6 +193,7 @@ function signinCallback(authResult) {
     //   "access_denied" - User denied access to your app
     //   "immediate_failed" - Could not automatically log in the user
     console.log('Sign-in state: ' + authResult['error']);
+    user = ""
   }
 }
 
