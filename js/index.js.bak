@@ -109,7 +109,7 @@ function deleteAlarmPopUp(button) {
        console.log("Something broke");
      }
    });
-   $("#" + this.document.activeElement.id).parent().remove(); 
+   $("#" + this.document.activeElement.id).parent().parent().remove(); 
 }
 
 function insertAlarm(hours, mins, ampm, alarmName, results) {
