@@ -1,6 +1,7 @@
 window.onload = getTemp();
 var LOGGER = 1
 var user = ""
+var userId = -1
 
 function getTemp() {
 
@@ -73,10 +74,10 @@ function addAlarm() {
       console.log($("#alarmName"))
       console.log("ADD ALARM: " + hours + " " + mins + " " + ampm + " =>" + alarmName)
    }
-   
+
    var AlarmObject = Parse.Object.extend("Alarm");
    var alarmObject = new AlarmObject();
-     alarmObject.save({"time": time,"alarmName": alarmName, "user": user}, {
+     alarmObject.save({"time": time,"alarmName": alarmName, "user": userId}, {
      success: function(object) {
          if(LOGGER) {
             console.log("getAllAlarms Success")
@@ -157,7 +158,7 @@ function insertAlarm(hours, mins, ampm, alarmName, results) {
    }
 }
 
-function getAllAlarms(authResult) {
+function getAllAlarms(userId) {
    if(LOGGER) { 
       console.log("getAllAlarms")
    }
@@ -171,8 +172,11 @@ function getAllAlarms(authResult) {
            success: function(results) {
                console.log(results + " " + results.length)
                for (var i = 0; i < results.length; i++) { 
-                   insertAlarm(results[i]["attributes"]["time"].substring(0,2), results[i]["attributes"]["time"].substring(3,5), results[i]["attributes"]["time"].substring(5), results[i]["attributes"]["alarmName"], results[i])
+                  if(userId == results[i]["attributes"]){
+                     insertAlarm(results[i]["attributes"]["time"].substring(0,2), results[i]["attributes"]["time"].substring(3,5), results[i]["attributes"]["time"].substring(5), results[i]["attributes"]["alarmName"], results[i])
+                  }
                }
+               
            }
          });
 }
@@ -182,12 +186,19 @@ function signinCallback(authResult) {
     // Update the app to reflect a signed in user
     // Hide the sign-in button now that the user is authorized, for example:
     document.getElementById('signinButton').setAttribute('style', 'display: none')
-    user = gapi.client.plus.people.get({'userId' : 'me'})
+    request = gapi.client.plus.people.get({'userId' : 'me'});
     
-    console.log(user.displayName)
+    request.execute(function(resp) {
+        console.log('ID: ' + resp.id);
+        console.log('Display Name: ' + resp.displayName);
+        console.log('Image URL: ' + resp.image.url);
+        console.log('Profile URL: ' + resp.url);
+        user = resp.displayName;
+        userId = resp.id;
+      });
     
-    $(".clocks").after("<h2> Signed in as: " + user.displayName + "</h2>")
-    $(this).load(getAllAlarms(authResult));
+    $(".clocks").after("<h2> Signed in as: " + user + "</h2>")
+    $(this).load(getAllAlarms(userId));
   } else {
     // Update the app to reflect a signed out user
     // Possible error values:
