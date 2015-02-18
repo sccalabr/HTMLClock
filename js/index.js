@@ -1,5 +1,7 @@
 window.onload = getTemp();
 var LOGGER = 1
+var user = ""
+
 function getTemp() {
 
    $.ajax({
@@ -155,7 +157,7 @@ function insertAlarm(hours, mins, ampm, alarmName, results) {
    }
 }
 
-function getAllAlarms() {
+function getAllAlarms(authResult) {
    if(LOGGER) { 
       console.log("getAllAlarms")
    }
@@ -163,6 +165,7 @@ function getAllAlarms() {
    Parse.initialize("apWKb4OIUYzyMki7S8KLGLM9w1lhhGUhBZsXC322", "ahKIZyhAtZ30ZHI4uuFNPlXRAmL9Rm2bIDkXR1j4")
 
    var AlarmObject = Parse.Object.extend("Alarm");
+
        var query = new Parse.Query(AlarmObject);
        query.find({
            success: function(results) {
@@ -179,6 +182,7 @@ function signinCallback(authResult) {
     // Update the app to reflect a signed in user
     // Hide the sign-in button now that the user is authorized, for example:
     document.getElementById('signinButton').setAttribute('style', 'display: none');
+    $(this).load(getAllAlarms(authResult));
   } else {
     // Update the app to reflect a signed out user
     // Possible error values:
@@ -186,8 +190,8 @@ function signinCallback(authResult) {
     //   "access_denied" - User denied access to your app
     //   "immediate_failed" - Could not automatically log in the user
     console.log('Sign-in state: ' + authResult['error']);
+    user = ""
   }
 }
 
 
-$(this).load(getAllAlarms);
