@@ -172,7 +172,7 @@ function getAllAlarms(userId) {
            success: function(results) {
                console.log(results + " " + results.length)
                for (var i = 0; i < results.length; i++) { 
-                  if(userId == results[i]["attributes"]){
+                  if(userId == results[i]["attributes"]["user"]){
                      insertAlarm(results[i]["attributes"]["time"].substring(0,2), results[i]["attributes"]["time"].substring(3,5), results[i]["attributes"]["time"].substring(5), results[i]["attributes"]["alarmName"], results[i])
                   }
                }
