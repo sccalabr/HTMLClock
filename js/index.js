@@ -195,11 +195,10 @@ function signinCallback(authResult) {
               console.log('Profile URL: ' + response.url);
               user = response.displayName;
               userId = response.id;
+              $(".clocks").after("<h2> Signed in as: " + user + "</h2>")
+              $(this).load(getAllAlarms(userId));
           });
       });
-    
-    $(".clocks").after("<h2> Signed in as: " + user + "</h2>")
-    $(this).load(getAllAlarms(userId));
   } else {
     // Update the app to reflect a signed out user
     // Possible error values:
