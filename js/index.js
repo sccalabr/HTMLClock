@@ -82,7 +82,7 @@ function addAlarm() {
          if(LOGGER) {
             console.log("getAllAlarms Success")
          }
-        
+       ga('send', 'event', 'Alarm', 'Add');
        insertAlarm(object["attributes"]["time"].substring(0,2), object["attributes"]["time"].substring(3,5), object["attributes"]["time"].substring(5), object["attributes"]["alarmName"], alarmObject)
        hideAlarmPopUp() 
      }
@@ -105,8 +105,7 @@ function deleteAlarmPopUp(button) {
      success: function(results) {
        // The object was retrieved successfully.
        results.destroy({});
-       
-
+       ga('send', 'event', 'Alarm', 'Delete');
      },
      error: function(object, error) {
        console.log("Something broke");
