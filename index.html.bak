@@ -6,6 +6,7 @@
             <link href="css/alarm.css" rel="stylesheet" type="text/css"/>
             <script src="https://www.parsecdn.com/js/parse-1.3.4.min.js"></script>
             <script src="https://apis.google.com/js/client:platform.js" async defer></script>
+            <script src="//cdn.optimizely.com/js/2502670473.js"></script>
             <title> Dynamic Clock</title>
         </head>
         <body>
@@ -28,7 +29,7 @@
          <span id="signinButton">
            <span class="g-signin"
              data-callback="signinCallback"
-             data-clientid="172603008367-l1keqmu10f87uh39pjtg8vpq1n5tjdv7.apps.googleusercontent.com"
+             data-clientid="172603008367-c4jgkvmrvl6avio4j2qgi746e6qnh4da.apps.googleusercontent.com"
              data-cookiepolicy="single_host_origin"
              data-requestvisibleactions="http://schema.org/AddAction"
              data-scope="https://www.googleapis.com/auth/plus.login">
