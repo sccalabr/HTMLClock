@@ -9,6 +9,7 @@ function init(json) {
 }
 
 function login() {
+   console.log("LOGIN")
 var client = new Dropbox.Client({key: "20mgxfvougr4gxt"});
 
 // Try to finish OAuth authorization.
@@ -18,8 +19,25 @@ client.authenticate({interactive: false}, function (error) {
     }
 });
 
-if (client.isAuthenticated()) {
+if (!client.isAuthenticated()) {
     // Client is authenticated. Display UI.
+    client.authenticate();
+    
+      $.ajax({
+      url: "https://api.dropbox.com/1/account/info",
+      data: {},
+      type: "GET",
+      dataType: "json",
+      success: function(json) {
+	    window.alert("sometext");
+      },
+      error: function(xhr, status, errorThrown) {
+         console.log("I Failed :(!")
+         alert(errorThrown)
+      }
+   });
+
+    window.alert("sometext");
 }
 
 
