@@ -12,6 +12,7 @@ function init() {
       $.ajax({
       url: "https://api.imgur.com/3/account/me/",
       type: "GET",
+      headers: {'Authorization: Bearer', params["access_token"]);},
       dataType: "json",
       success: function(string) {
       console.log(string)
@@ -19,6 +20,7 @@ function init() {
       },
       error: function(xhr, status, errorThrown) {
       console.log("I Failed :(!")
+      console.log(errorThrown)
       alert(errorThrown)
       }
       });
