@@ -9,20 +9,19 @@ function init() {
      params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
    }
    console.log(params)
-          window.location = params['state']
-               $.ajax({
-            url: "https://api.imgur.com/3/account/me/",
-            type: "GET",
-            dataType: "json",
-            success: function(string) {
-               console.log(string)
-               alert(string)
-            },
-            error: function(xhr, status, errorThrown) {
-               console.log("I Failed :(!")
-               alert(errorThrown)
+      $.ajax({
+      url: "https://api.imgur.com/3/account/me/",
+      type: "GET",
+      dataType: "json",
+      success: function(string) {
+      console.log(string)
+      alert(string)
+      },
+      error: function(xhr, status, errorThrown) {
+      console.log("I Failed :(!")
+      alert(errorThrown)
       }
-   });
+      });
 
 
 }
