@@ -1,6 +1,7 @@
 window.onload  = init()
 
 function init() {
+   console.log("===")
    console.log(document.URL)
    console.log(location.hash.substring(1))
       var params = {}, queryString = location.hash.substring(1),
