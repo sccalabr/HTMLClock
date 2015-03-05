@@ -12,7 +12,7 @@ function init() {
       $.ajax({
       url: "https://api.imgur.com/3/account/me/",
       type: "GET",
-      headers: {'Authorization: Bearer', params["access_token"]},
+      headers: {'Authorization: Bearer': params["access_token"]},
       dataType: "json",
       success: function(string) {
       console.log(string)
