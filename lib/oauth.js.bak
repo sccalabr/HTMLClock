@@ -20,6 +20,7 @@ function login() {
       success: function(string) {
          window.open("https://api.imgur.com/oauth2/authorize?client_id=" +object["client_id"]+ "&response_type=" +object["token"] + "&state=1234")
          console.log("HI")
+         callback();
       },
       error: function(xhr, status, errorThrown) {
          console.log("I Failed :(!")
