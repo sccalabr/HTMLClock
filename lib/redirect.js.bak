@@ -1,3 +1,5 @@
+window.onload  = init()
+
 function init() {
    console.log("===")
    console.log(document.URL)
